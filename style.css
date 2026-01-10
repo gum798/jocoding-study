@@ -14,6 +14,9 @@
     --button-bg-3: linear-gradient(45deg, #66bb6a, #388e3c);
     --button-shadow-3: 0 4px 15px rgba(102, 187, 106, 0.4);
     --button-hover-shadow-3: 0 8px 25px rgba(102, 187, 106, 0.5);
+    --button-bg-4: linear-gradient(45deg, #ffa726, #fb8c00);
+    --button-shadow-4: 0 4px 15px rgba(255, 167, 38, 0.4);
+    --button-hover-shadow-4: 0 8px 25px rgba(255, 167, 38, 0.5);
 }
 
 .dark-mode {
@@ -158,9 +161,10 @@ h1 {
     display: flex;
     justify-content: center;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
-#generate-btn, #copy-btn, #share-btn {
+#generate-btn, #copy-btn, #share-btn, #menu-btn {
     color: #fff;
     border: none;
     padding: 15px 30px;
@@ -186,6 +190,11 @@ h1 {
     box-shadow: var(--button-shadow-3);
 }
 
+#menu-btn {
+    background: var(--button-bg-4);
+    box-shadow: var(--button-shadow-4);
+}
+
 #generate-btn:hover {
     transform: translateY(-3px);
     box-shadow: var(--button-hover-shadow-1);
@@ -199,4 +208,9 @@ h1 {
 #share-btn:hover {
     transform: translateY(-3px);
     box-shadow: var(--button-hover-shadow-3);
+}
+
+#menu-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--button-hover-shadow-4);
 }

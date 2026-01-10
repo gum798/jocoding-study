@@ -1,10 +1,23 @@
 const generateBtn = document.getElementById('generate-btn');
 const copyBtn = document.getElementById('copy-btn');
 const shareBtn = document.getElementById('share-btn');
+const menuBtn = document.getElementById('menu-btn');
 const ticketCountInput = document.getElementById('ticket-count');
 const lottoTicketsContainer = document.querySelector('.lotto-tickets');
 const themeSwitch = document.getElementById('checkbox');
 let generatedTickets = [];
+
+const lunchMenus = [
+    'Kimchi Stew', 'Bibimbap', 'Bulgogi', 'Pork Cutlet', 'Pasta', 
+    'Pizza', 'Burger', 'Sushi', 'Ramen', 'Tteokbokki', 
+    'Sandwich', 'Salad', 'Fried Rice', 'Gimbap', 'Udon'
+];
+
+menuBtn.addEventListener('click', () => {
+    const randomIndex = Math.floor(Math.random() * lunchMenus.length);
+    const recommendedMenu = lunchMenus[randomIndex];
+    alert(`How about ${recommendedMenu} for lunch today? 😋`);
+});
 
 function setDarkMode(isDark) {
     if (isDark) {
