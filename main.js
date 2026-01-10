@@ -37,7 +37,9 @@ const translations = {
             'Pizza', 'Burger', 'Sushi', 'Ramen', 'Tteokbokki', 
             'Sandwich', 'Salad', 'Fried Rice', 'Gimbap', 'Udon'
         ],
-        lunchAlert: 'How about {menu} for lunch today? 😋'
+        lunchAlert: 'How about {menu} for lunch today? 😋',
+        aiTitle: 'AI Posture Check',
+        aiStartBtn: 'Start Camera'
     },
     ko: {
         title: '로또 번호 생성기',
@@ -64,7 +66,9 @@ const translations = {
             '피자', '햄버거', '초밥', '라면', '떡볶이', 
             '샌드위치', '샐러드', '볶음밥', '김밥', '우동'
         ],
-        lunchAlert: '오늘 점심으로 {menu} 어떠세요? 😋'
+        lunchAlert: '오늘 점심으로 {menu} 어떠세요? 😋',
+        aiTitle: 'AI 자세 확인',
+        aiStartBtn: '카메라 시작'
     }
 };
 
@@ -106,6 +110,68 @@ menuBtn.addEventListener('click', () => {
     const recommendedMenu = menus[randomIndex];
     const message = translations[currentLang].lunchAlert.replace('{menu}', recommendedMenu);
     alert(message);
+});
+
+// Teachable Machine Pose Logic
+const URL = "https://teachablemachine.withgoogle.com/models/2JtG9CQd-/";
+let model, webcam, ctx, labelContainer, maxPredictions;
+
+async function init() {
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
+
+    model = await tmPose.load(modelURL, metadataURL);
+    maxPredictions = model.getTotalClasses();
+
+    const size = 200;
+    const flip = true; 
+    webcam = new tmPose.Webcam(size, size, flip); 
+    await webcam.setup(); 
+    await webcam.play();
+    window.requestAnimationFrame(loop);
+
+    const canvas = document.getElementById("canvas");
+    canvas.width = size; canvas.height = size;
+    ctx = canvas.getContext("2d");
+    labelContainer = document.getElementById("label-container");
+    labelContainer.innerHTML = ''; 
+    for (let i = 0; i < maxPredictions; i++) { 
+        labelContainer.appendChild(document.createElement("div"));
+    }
+}
+
+async function loop(timestamp) {
+    webcam.update(); 
+    await predict();
+    window.requestAnimationFrame(loop);
+}
+
+async function predict() {
+    const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
+    const prediction = await model.predict(posenetOutput);
+
+    for (let i = 0; i < maxPredictions; i++) {
+        const classPrediction =
+            prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+        labelContainer.childNodes[i].innerHTML = classPrediction;
+    }
+
+    drawPose(pose);
+}
+
+function drawPose(pose) {
+    if (webcam.canvas) {
+        ctx.drawImage(webcam.canvas, 0, 0);
+        if (pose) {
+            const minPartConfidence = 0.5;
+            tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
+            tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
+        }
+    }
+}
+
+document.getElementById('start-ai-btn').addEventListener('click', () => {
+    init();
 });
 
 function setDarkMode(isDark) {
