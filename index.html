@@ -28,6 +28,26 @@
             <button id="copy-btn" data-i18n="copyBtn">Copy Numbers</button>
             <button id="share-btn" data-i18n="shareBtn">Share Numbers</button>
             <button id="menu-btn" data-i18n="menuBtn">Lunch Menu</button>
+            <button id="contact-btn" data-i18n="contactBtn">Partnership</button>
+        </div>
+    </div>
+
+    <div id="contact-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 data-i18n="contactTitle">Partnership Inquiry</h2>
+            <form action="https://formspree.io/f/xwvveqan" method="POST">
+                <label data-i18n="contactName">Name</label>
+                <input type="text" name="name" required>
+                
+                <label data-i18n="contactEmail">Email</label>
+                <input type="email" name="email" required>
+                
+                <label data-i18n="contactMessage">Message</label>
+                <textarea name="message" rows="4" required></textarea>
+                
+                <button type="submit" data-i18n="contactSubmit">Send</button>
+            </form>
         </div>
     </div>
     <script src="main.js"></script>

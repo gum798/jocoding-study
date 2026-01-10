@@ -2,10 +2,13 @@ const generateBtn = document.getElementById('generate-btn');
 const copyBtn = document.getElementById('copy-btn');
 const shareBtn = document.getElementById('share-btn');
 const menuBtn = document.getElementById('menu-btn');
+const contactBtn = document.getElementById('contact-btn');
 const ticketCountInput = document.getElementById('ticket-count');
 const lottoTicketsContainer = document.querySelector('.lotto-tickets');
 const themeSwitch = document.getElementById('checkbox');
 const languageSelector = document.getElementById('language-selector');
+const contactModal = document.getElementById('contact-modal');
+const closeBtn = document.querySelector('.close-btn');
 let generatedTickets = [];
 
 const translations = {
@@ -15,6 +18,12 @@ const translations = {
         copyBtn: 'Copy Numbers',
         shareBtn: 'Share Numbers',
         menuBtn: 'Lunch Menu',
+        contactBtn: 'Partnership',
+        contactTitle: 'Partnership Inquiry',
+        contactName: 'Name',
+        contactEmail: 'Email',
+        contactMessage: 'Message',
+        contactSubmit: 'Send',
         alertGenerate: 'Please generate numbers first!',
         alertCopy: 'Copied!',
         alertCopyFail: 'Failed to copy numbers. Please try again.',
@@ -36,6 +45,12 @@ const translations = {
         copyBtn: '번호 복사',
         shareBtn: '공유하기',
         menuBtn: '점심 메뉴 추천',
+        contactBtn: '제휴 문의',
+        contactTitle: '제휴 문의',
+        contactName: '이름',
+        contactEmail: '이메일',
+        contactMessage: '메시지',
+        contactSubmit: '보내기',
         alertGenerate: '먼저 번호를 생성해주세요!',
         alertCopy: '복사되었습니다!',
         alertCopyFail: '복사에 실패했습니다. 다시 시도해주세요.',
@@ -68,6 +83,21 @@ function updateLanguage(lang) {
 
 languageSelector.addEventListener('change', (e) => {
     updateLanguage(e.target.value);
+});
+
+// Modal Logic
+contactBtn.addEventListener('click', () => {
+    contactModal.style.display = 'block';
+});
+
+closeBtn.addEventListener('click', () => {
+    contactModal.style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target == contactModal) {
+        contactModal.style.display = 'none';
+    }
 });
 
 menuBtn.addEventListener('click', () => {
