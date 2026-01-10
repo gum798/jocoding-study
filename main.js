@@ -39,7 +39,15 @@ const translations = {
         ],
         lunchAlert: 'How about {menu} for lunch today? 😋',
         aiTitle: 'AI Posture Check',
-        aiStartBtn: 'Start Camera'
+        aiStartBtn: 'Start Camera',
+        aboutTitle: 'About This Lotto Generator',
+        aboutText1: 'Welcome to the ultimate Lotto Ticket Generator! Our tool is designed to help you randomly select numbers for your next lottery ticket. Unlike simple random number pickers, we provide a clean, easy-to-use interface that mimics the feeling of a real lottery draw.',
+        howItWorksTitle: 'How It Works',
+        howItWorksText: 'We use advanced cryptographic algorithms to ensure that every number generated is truly random and unbiased. Whether you need 6 numbers or more, our system handles the complexity for you. Simply enter the number of tickets you want, click generate, and let luck take its course!',
+        funFactsTitle: 'Lotto Fun Facts',
+        funFactsText: 'Did you know? The word "lottery" comes from the Dutch word "lot", meaning "fate". Lotteries have been around for centuries, with the first recorded signs of a lottery being keno slips from the Chinese Han Dynasty between 205 and 187 BC. These lotteries are believed to have helped finance major government projects like the Great Wall of China!',
+        responsibleTitle: 'Responsible Gaming',
+        responsibleText: 'Please remember that lottery games are a form of entertainment. We encourage all our users to play responsibly. Never spend more than you can afford to lose. This tool is for amusement purposes and does not guarantee a win.'
     },
     ko: {
         title: '로또 번호 생성기',
@@ -68,7 +76,15 @@ const translations = {
         ],
         lunchAlert: '오늘 점심으로 {menu} 어떠세요? 😋',
         aiTitle: 'AI 자세 확인',
-        aiStartBtn: '카메라 시작'
+        aiStartBtn: '카메라 시작',
+        aboutTitle: '로또 번호 생성기 소개',
+        aboutText1: '최고의 로또 번호 생성기에 오신 것을 환영합니다! 저희 도구는 다음 로또 티켓을 위해 무작위로 번호를 선택하는 것을 돕기 위해 설계되었습니다. 단순한 난수 생성기와 달리, 실제 로또 추첨의 느낌을 주는 깔끔하고 사용하기 쉬운 인터페이스를 제공합니다.',
+        howItWorksTitle: '작동 원리',
+        howItWorksText: '저희는 모든 생성된 번호가 진정으로 무작위이고 편향되지 않도록 고급 암호화 알고리즘을 사용합니다. 6개의 번호가 필요하든 그 이상이든, 저희 시스템이 복잡한 과정을 처리해 드립니다. 원하는 티켓 수를 입력하고 생성 버튼을 클릭하기만 하면 행운이 따를 것입니다!',
+        funFactsTitle: '로또 재미있는 사실',
+        funFactsText: '알고 계셨나요? "로또"라는 단어는 "운명"을 뜻하는 네덜란드어 "lot"에서 유래했습니다. 로또는 수세기 동안 존재해 왔으며, 최초의 기록은 기원전 205년에서 187년 사이 중국 한나라의 키노 전표입니다. 이 복권들은 만리장성과 같은 주요 정부 프로젝트의 자금을 조달하는 데 도움이 된 것으로 여겨집니다!',
+        responsibleTitle: '책임감 있는 게임',
+        responsibleText: '로또 게임은 오락의 일종임을 기억해 주세요. 모든 사용자가 책임감 있게 게임을 즐기시기를 권장합니다. 감당할 수 있는 범위 내에서만 지출하세요. 이 도구는 재미를 위한 것이며 당첨을 보장하지 않습니다.'
     }
 };
 
