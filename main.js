@@ -1,7 +1,8 @@
+// DOM Elements
 const generateBtn = document.getElementById('generate-btn');
 const copyBtn = document.getElementById('copy-btn');
 const shareBtn = document.getElementById('share-btn');
-const menuBtn = document.getElementById('menu-btn');
+const lunchDecideBtn = document.getElementById('lunch-decide-btn'); // Renamed
 const contactBtn = document.getElementById('contact-btn');
 const ticketCountInput = document.getElementById('ticket-count');
 const lottoTicketsContainer = document.querySelector('.lotto-tickets');
@@ -9,15 +10,24 @@ const themeSwitch = document.getElementById('checkbox');
 const languageSelector = document.getElementById('language-selector');
 const contactModal = document.getElementById('contact-modal');
 const closeBtn = document.querySelector('.close-btn');
+const navBtns = document.querySelectorAll('.nav-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+const lunchResult = document.getElementById('lunch-result');
+
 let generatedTickets = [];
 
+// Translations
 const translations = {
     en: {
-        title: 'Lotto Ticket Generator',
+        title: 'LottoGen',
+        navGenerator: 'Generator',
+        navLunch: 'Lunch',
+        navAI: 'AI Check',
+        navAbout: 'About',
         generateBtn: 'Generate Numbers',
-        copyBtn: 'Copy Numbers',
-        shareBtn: 'Share Numbers',
-        menuBtn: 'Lunch Menu',
+        copyBtn: 'Copy',
+        shareBtn: 'Share',
+        menuBtn: 'Recommend Menu',
         contactBtn: 'Partnership',
         contactTitle: 'Partnership Inquiry',
         contactName: 'Name',
@@ -50,11 +60,15 @@ const translations = {
         responsibleText: 'Please remember that lottery games are a form of entertainment. We encourage all our users to play responsibly. Never spend more than you can afford to lose. This tool is for amusement purposes and does not guarantee a win.'
     },
     ko: {
-        title: '로또 번호 생성기',
+        title: '로또젠',
+        navGenerator: '생성기',
+        navLunch: '점심메뉴',
+        navAI: 'AI 체크',
+        navAbout: '소개',
         generateBtn: '번호 생성',
-        copyBtn: '번호 복사',
-        shareBtn: '공유하기',
-        menuBtn: '점심 메뉴 추천',
+        copyBtn: '복사',
+        shareBtn: '공유',
+        menuBtn: '메뉴 추천',
         contactBtn: '제휴 문의',
         contactTitle: '제휴 문의',
         contactName: '이름',
@@ -90,6 +104,8 @@ const translations = {
 
 let currentLang = 'en';
 
+// --- Functions ---
+
 function updateLanguage(lang) {
     currentLang = lang;
     languageSelector.value = lang;
@@ -97,15 +113,52 @@ function updateLanguage(lang) {
 
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
-        element.textContent = translations[lang][key];
+        if (translations[lang][key]) {
+            element.textContent = translations[lang][key];
+        }
     });
 }
+
+function setDarkMode(isDark) {
+    if (isDark) {
+        document.body.classList.add('dark-mode');
+        themeSwitch.checked = true;
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.body.classList.remove('dark-mode');
+        themeSwitch.checked = false;
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+// Tab Switching
+navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Remove active class from all buttons and contents
+        navBtns.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+
+        // Add active class to clicked button
+        btn.classList.add('active');
+
+        // Show corresponding content
+        const tabId = btn.getAttribute('data-tab');
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+    });
+});
+
+
+// --- Event Listeners ---
 
 languageSelector.addEventListener('change', (e) => {
     updateLanguage(e.target.value);
 });
 
-// Modal Logic
+themeSwitch.addEventListener('change', () => {
+    setDarkMode(themeSwitch.checked);
+});
+
+// Modal
 contactBtn.addEventListener('click', () => {
     contactModal.style.display = 'block';
 });
@@ -120,13 +173,108 @@ window.addEventListener('click', (event) => {
     }
 });
 
-menuBtn.addEventListener('click', () => {
+// Lunch Menu
+lunchDecideBtn.addEventListener('click', () => {
     const menus = translations[currentLang].lunchMenus;
     const randomIndex = Math.floor(Math.random() * menus.length);
     const recommendedMenu = menus[randomIndex];
     const message = translations[currentLang].lunchAlert.replace('{menu}', recommendedMenu);
-    alert(message);
+    
+    // Update the text in the UI instead of alert
+    lunchResult.textContent = recommendedMenu;
+    lunchResult.style.color = 'var(--primary-color)';
 });
+
+// Generator
+generateBtn.addEventListener('click', () => {
+    const ticketCount = parseInt(ticketCountInput.value, 10);
+    generatedTickets = generateLottoTickets(ticketCount);
+    displayLottoTickets(generatedTickets);
+});
+
+copyBtn.addEventListener('click', () => {
+    if (generatedTickets.length === 0) {
+        alert(translations[currentLang].alertGenerate);
+        return;
+    }
+    const numbersString = generatedTickets.map(ticket => ticket.join(', ')).join('\n');
+    navigator.clipboard.writeText(numbersString)
+        .then(() => {
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = translations[currentLang].alertCopy;
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('Failed to copy numbers: ', err);
+            alert(translations[currentLang].alertCopyFail);
+        });
+});
+
+shareBtn.addEventListener('click', () => {
+    if (generatedTickets.length === 0) {
+        alert(translations[currentLang].alertGenerate);
+        return;
+    }
+    if (navigator.share) {
+        const numbersString = generatedTickets.map(ticket => ticket.join(', ')).join('\n');
+        navigator.share({
+            title: translations[currentLang].shareTitle,
+            text: `${translations[currentLang].shareText}${numbersString}`,
+            url: window.location.href
+        })
+        .then(() => console.log(translations[currentLang].shareSuccess))
+        .catch((error) => console.log(translations[currentLang].shareError, error));
+    } else {
+        alert(translations[currentLang].shareUnsupported);
+    }
+});
+
+function generateLottoNumbers() {
+    const numbers = new Set();
+    while (numbers.size < 6) {
+        const randomNumber = Math.floor(Math.random() * 45) + 1;
+        numbers.add(randomNumber);
+    }
+    return Array.from(numbers).sort((a, b) => a - b);
+}
+
+function generateLottoTickets(count) {
+    const tickets = [];
+    for (let i = 0; i < count; i++) {
+        tickets.push(generateLottoNumbers());
+    }
+    return tickets;
+}
+
+function displayLottoTickets(tickets) {
+    lottoTicketsContainer.innerHTML = '';
+    tickets.forEach(ticket => {
+        const ticketDiv = document.createElement('div');
+        ticketDiv.classList.add('lotto-ticket');
+        ticket.forEach(number => {
+            const numberDiv = document.createElement('div');
+            numberDiv.classList.add('lotto-number');
+            numberDiv.textContent = number;
+            
+            if (number <= 10) {
+                numberDiv.style.backgroundColor = '#f1c40f'; 
+            } else if (number <= 20) {
+                numberDiv.style.backgroundColor = '#3498db'; 
+            } else if (number <= 30) {
+                numberDiv.style.backgroundColor = '#e67e22'; 
+            } else if (number <= 40) {
+                numberDiv.style.backgroundColor = '#9b59b6'; 
+            } else {
+                numberDiv.style.backgroundColor = '#2ecc71'; 
+            }
+
+            ticketDiv.appendChild(numberDiv);
+        });
+        lottoTicketsContainer.appendChild(ticketDiv);
+    });
+}
 
 // Teachable Machine Pose Logic
 const URL = "https://teachablemachine.withgoogle.com/models/2JtG9CQd-/";
@@ -138,7 +286,7 @@ async function init() {
 
     // Show the container
     document.getElementById('ai-container').style.display = 'flex';
-    document.getElementById('start-ai-btn').style.display = 'none'; // Optional: Hide start button after starting
+    document.getElementById('start-ai-btn').style.display = 'none'; 
 
     model = await tmPose.load(modelURL, metadataURL);
     maxPredictions = model.getTotalClasses();
@@ -194,22 +342,7 @@ document.getElementById('start-ai-btn').addEventListener('click', () => {
     init();
 });
 
-function setDarkMode(isDark) {
-    if (isDark) {
-        document.body.classList.add('dark-mode');
-        themeSwitch.checked = true;
-        localStorage.setItem('theme', 'dark');
-    } else {
-        document.body.classList.remove('dark-mode');
-        themeSwitch.checked = false;
-        localStorage.setItem('theme', 'light');
-    }
-}
-
-themeSwitch.addEventListener('change', () => {
-    setDarkMode(themeSwitch.checked);
-});
-
+// Initialization
 document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -221,95 +354,3 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('language') || 'en';
     updateLanguage(savedLang);
 });
-
-generateBtn.addEventListener('click', () => {
-    const ticketCount = parseInt(ticketCountInput.value, 10);
-    generatedTickets = generateLottoTickets(ticketCount);
-    displayLottoTickets(generatedTickets);
-});
-
-copyBtn.addEventListener('click', () => {
-    if (generatedTickets.length === 0) {
-        alert(translations[currentLang].alertGenerate);
-        return;
-    }
-
-    const numbersString = generatedTickets.map(ticket => ticket.join(', ')).join('\n');
-    navigator.clipboard.writeText(numbersString)
-        .then(() => {
-            const originalText = copyBtn.textContent;
-            copyBtn.textContent = translations[currentLang].alertCopy;
-            setTimeout(() => {
-                copyBtn.textContent = originalText;
-            }, 2000);
-        })
-        .catch(err => {
-            console.error('Failed to copy numbers: ', err);
-            alert(translations[currentLang].alertCopyFail);
-        });
-});
-
-shareBtn.addEventListener('click', () => {
-    if (generatedTickets.length === 0) {
-        alert(translations[currentLang].alertGenerate);
-        return;
-    }
-
-    if (navigator.share) {
-        const numbersString = generatedTickets.map(ticket => ticket.join(', ')).join('\n');
-        navigator.share({
-            title: translations[currentLang].shareTitle,
-            text: `${translations[currentLang].shareText}${numbersString}`,
-            url: window.location.href
-        })
-        .then(() => console.log(translations[currentLang].shareSuccess))
-        .catch((error) => console.log(translations[currentLang].shareError, error));
-    } else {
-        alert(translations[currentLang].shareUnsupported);
-    }
-});
-
-function generateLottoNumbers() {
-    const numbers = new Set();
-    while (numbers.size < 6) {
-        const randomNumber = Math.floor(Math.random() * 45) + 1;
-        numbers.add(randomNumber);
-    }
-    return Array.from(numbers).sort((a, b) => a - b);
-}
-
-function generateLottoTickets(count) {
-    const tickets = [];
-    for (let i = 0; i < count; i++) {
-        tickets.push(generateLottoNumbers());
-    }
-    return tickets;
-}
-
-function displayLottoTickets(tickets) {
-    lottoTicketsContainer.innerHTML = '';
-    tickets.forEach(ticket => {
-        const ticketDiv = document.createElement('div');
-        ticketDiv.classList.add('lotto-ticket');
-        ticket.forEach(number => {
-            const numberDiv = document.createElement('div');
-            numberDiv.classList.add('lotto-number');
-            numberDiv.textContent = number;
-            
-            if (number <= 10) {
-                numberDiv.style.backgroundColor = '#FFC107'; // Yellow
-            } else if (number <= 20) {
-                numberDiv.style.backgroundColor = '#2196F3'; // Blue
-            } else if (number <= 30) {
-                numberDiv.style.backgroundColor = '#FF5722'; // Orange
-            } else if (number <= 40) {
-                numberDiv.style.backgroundColor = '#9C27B0'; // Purple
-            } else {
-                numberDiv.style.backgroundColor = '#4CAF50'; // Green
-            }
-
-            ticketDiv.appendChild(numberDiv);
-        });
-        lottoTicketsContainer.appendChild(ticketDiv);
-    });
-}
