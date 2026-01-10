@@ -136,6 +136,10 @@ async function init() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
 
+    // Show the container
+    document.getElementById('ai-container').style.display = 'flex';
+    document.getElementById('start-ai-btn').style.display = 'none'; // Optional: Hide start button after starting
+
     model = await tmPose.load(modelURL, metadataURL);
     maxPredictions = model.getTotalClasses();
 
