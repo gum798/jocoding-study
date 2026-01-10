@@ -8,22 +8,26 @@
 </head>
 <body>
     <div class="theme-switch-wrapper">
+        <select id="language-selector" style="margin-right: 10px; padding: 5px; border-radius: 5px;">
+            <option value="en">English</option>
+            <option value="ko">한국어</option>
+        </select>
         <label class="theme-switch" for="checkbox">
             <input type="checkbox" id="checkbox" />
             <div class="slider round"></div>
         </label>
     </div>
     <div class="container">
-        <h1>Lotto Ticket Generator</h1>
+        <h1 data-i18n="title">Lotto Ticket Generator</h1>
         <div class="ticket-generator">
             <input type="number" id="ticket-count" value="5" min="1" max="10">
-            <button id="generate-btn">Generate Numbers</button>
+            <button id="generate-btn" data-i18n="generateBtn">Generate Numbers</button>
         </div>
         <div class="lotto-tickets"></div>
         <div class="buttons-container">
-            <button id="copy-btn">Copy Numbers</button>
-            <button id="share-btn">Share Numbers</button>
-            <button id="menu-btn">Lunch Menu</button>
+            <button id="copy-btn" data-i18n="copyBtn">Copy Numbers</button>
+            <button id="share-btn" data-i18n="shareBtn">Share Numbers</button>
+            <button id="menu-btn" data-i18n="menuBtn">Lunch Menu</button>
         </div>
     </div>
     <script src="main.js"></script>

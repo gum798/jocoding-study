@@ -5,18 +5,77 @@ const menuBtn = document.getElementById('menu-btn');
 const ticketCountInput = document.getElementById('ticket-count');
 const lottoTicketsContainer = document.querySelector('.lotto-tickets');
 const themeSwitch = document.getElementById('checkbox');
+const languageSelector = document.getElementById('language-selector');
 let generatedTickets = [];
 
-const lunchMenus = [
-    'Kimchi Stew', 'Bibimbap', 'Bulgogi', 'Pork Cutlet', 'Pasta', 
-    'Pizza', 'Burger', 'Sushi', 'Ramen', 'Tteokbokki', 
-    'Sandwich', 'Salad', 'Fried Rice', 'Gimbap', 'Udon'
-];
+const translations = {
+    en: {
+        title: 'Lotto Ticket Generator',
+        generateBtn: 'Generate Numbers',
+        copyBtn: 'Copy Numbers',
+        shareBtn: 'Share Numbers',
+        menuBtn: 'Lunch Menu',
+        alertGenerate: 'Please generate numbers first!',
+        alertCopy: 'Copied!',
+        alertCopyFail: 'Failed to copy numbers. Please try again.',
+        shareTitle: 'My Lotto Numbers',
+        shareText: 'Check out my lucky numbers:\n',
+        shareSuccess: 'Successful share',
+        shareError: 'Error sharing',
+        shareUnsupported: 'Web Share API is not supported in your browser.',
+        lunchMenus: [
+            'Kimchi Stew', 'Bibimbap', 'Bulgogi', 'Pork Cutlet', 'Pasta', 
+            'Pizza', 'Burger', 'Sushi', 'Ramen', 'Tteokbokki', 
+            'Sandwich', 'Salad', 'Fried Rice', 'Gimbap', 'Udon'
+        ],
+        lunchAlert: 'How about {menu} for lunch today? 😋'
+    },
+    ko: {
+        title: '로또 번호 생성기',
+        generateBtn: '번호 생성',
+        copyBtn: '번호 복사',
+        shareBtn: '공유하기',
+        menuBtn: '점심 메뉴 추천',
+        alertGenerate: '먼저 번호를 생성해주세요!',
+        alertCopy: '복사되었습니다!',
+        alertCopyFail: '복사에 실패했습니다. 다시 시도해주세요.',
+        shareTitle: '나의 로또 번호',
+        shareText: '행운의 번호를 확인하세요:\n',
+        shareSuccess: '공유 성공',
+        shareError: '공유 실패',
+        shareUnsupported: '이 브라우저에서는 웹 공유 API를 지원하지 않습니다.',
+        lunchMenus: [
+            '김치찌개', '비빔밥', '불고기', '돈까스', '파스타', 
+            '피자', '햄버거', '초밥', '라면', '떡볶이', 
+            '샌드위치', '샐러드', '볶음밥', '김밥', '우동'
+        ],
+        lunchAlert: '오늘 점심으로 {menu} 어떠세요? 😋'
+    }
+};
+
+let currentLang = 'en';
+
+function updateLanguage(lang) {
+    currentLang = lang;
+    languageSelector.value = lang;
+    localStorage.setItem('language', lang);
+
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        element.textContent = translations[lang][key];
+    });
+}
+
+languageSelector.addEventListener('change', (e) => {
+    updateLanguage(e.target.value);
+});
 
 menuBtn.addEventListener('click', () => {
-    const randomIndex = Math.floor(Math.random() * lunchMenus.length);
-    const recommendedMenu = lunchMenus[randomIndex];
-    alert(`How about ${recommendedMenu} for lunch today? 😋`);
+    const menus = translations[currentLang].lunchMenus;
+    const randomIndex = Math.floor(Math.random() * menus.length);
+    const recommendedMenu = menus[randomIndex];
+    const message = translations[currentLang].lunchAlert.replace('{menu}', recommendedMenu);
+    alert(message);
 });
 
 function setDarkMode(isDark) {
@@ -42,6 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         setDarkMode(false);
     }
+
+    const savedLang = localStorage.getItem('language') || 'en';
+    updateLanguage(savedLang);
 });
 
 generateBtn.addEventListener('click', () => {
@@ -52,7 +114,7 @@ generateBtn.addEventListener('click', () => {
 
 copyBtn.addEventListener('click', () => {
     if (generatedTickets.length === 0) {
-        alert('Please generate numbers first!');
+        alert(translations[currentLang].alertGenerate);
         return;
     }
 
@@ -60,34 +122,34 @@ copyBtn.addEventListener('click', () => {
     navigator.clipboard.writeText(numbersString)
         .then(() => {
             const originalText = copyBtn.textContent;
-            copyBtn.textContent = 'Copied!';
+            copyBtn.textContent = translations[currentLang].alertCopy;
             setTimeout(() => {
                 copyBtn.textContent = originalText;
             }, 2000);
         })
         .catch(err => {
             console.error('Failed to copy numbers: ', err);
-            alert('Failed to copy numbers. Please try again.');
+            alert(translations[currentLang].alertCopyFail);
         });
 });
 
 shareBtn.addEventListener('click', () => {
     if (generatedTickets.length === 0) {
-        alert('Please generate numbers first!');
+        alert(translations[currentLang].alertGenerate);
         return;
     }
 
     if (navigator.share) {
         const numbersString = generatedTickets.map(ticket => ticket.join(', ')).join('\n');
         navigator.share({
-            title: 'My Lotto Numbers',
-            text: `Check out my lucky numbers:\n${numbersString}`,
+            title: translations[currentLang].shareTitle,
+            text: `${translations[currentLang].shareText}${numbersString}`,
             url: window.location.href
         })
-        .then(() => console.log('Successful share'))
-        .catch((error) => console.log('Error sharing', error));
+        .then(() => console.log(translations[currentLang].shareSuccess))
+        .catch((error) => console.log(translations[currentLang].shareError, error));
     } else {
-        alert('Web Share API is not supported in your browser.');
+        alert(translations[currentLang].shareUnsupported);
     }
 });
 
