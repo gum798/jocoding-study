@@ -3,7 +3,33 @@ const copyBtn = document.getElementById('copy-btn');
 const shareBtn = document.getElementById('share-btn');
 const ticketCountInput = document.getElementById('ticket-count');
 const lottoTicketsContainer = document.querySelector('.lotto-tickets');
+const themeSwitch = document.getElementById('checkbox');
 let generatedTickets = [];
+
+function setDarkMode(isDark) {
+    if (isDark) {
+        document.body.classList.add('dark-mode');
+        themeSwitch.checked = true;
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.body.classList.remove('dark-mode');
+        themeSwitch.checked = false;
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+themeSwitch.addEventListener('change', () => {
+    setDarkMode(themeSwitch.checked);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        setDarkMode(true);
+    } else {
+        setDarkMode(false);
+    }
+});
 
 generateBtn.addEventListener('click', () => {
     const ticketCount = parseInt(ticketCountInput.value, 10);
