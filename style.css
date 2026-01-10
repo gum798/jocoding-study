@@ -56,6 +56,21 @@
     animation: slideDown 0.3s ease-out;
 }
 
+.text-content {
+    text-align: left;
+    line-height: 1.8;
+}
+
+.text-content h2, .text-content h3 {
+    color: var(--header-color);
+    margin-top: 30px;
+}
+
+.text-content p {
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
 @keyframes slideDown {
     from { transform: translateY(-50px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://gum798.github.io/jocoding-study/sitemap.xml
